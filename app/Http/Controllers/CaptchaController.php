@@ -41,7 +41,25 @@ class CaptchaController extends Controller
             'g-recaptcha-response' => 'required|captcha'
         ]);
 
-        return view('welcome');
+        $url = 'https://www.google.com/recaptcha/api/siteverify';
+        $data = array('secret' => '6LcQ31EUAAAAAE0MqF8NKm_m4D-ci4cS6nonlSXT', 'response' => $request->{'g-recaptcha-response'});
+
+// use key 'http' even if you send the request to https://...
+$options = array(
+    'http' => array(
+        'header'  => 'Content-type: application/x-www-form-urlencoded\r\n',
+        'method'  => 'POST',
+        'content' => http_build_query($data)
+    )
+);
+
+$context  = stream_context_create($options);
+$result = file_get_contents($url, false, $context);
+if ($result === FALSE) { /* Handle error */ }
+
+
+//         dd($result);
+
     }
 
     /**
